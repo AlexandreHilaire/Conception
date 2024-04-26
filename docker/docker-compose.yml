@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+
+  db:
+    image:  mariadb:latest
+    restart: always
+    environment:
+      MYSQL_DATABASE: craftedby_db
+      MYSQL_ROOT_USER: root
+      MYSQL_ROOT_PASSWORD: cratfer
+      MYSQL_USER: crafteradmin
+      MYSQL_PASSWORD: crafter
+    volumes:
+      - ./mariadb-data:/var/lib/mysql
+    networks:
+      - craftedby-network
+
+  docker-backend:
+    build: ../CraftedBy-backendAPI/
+    ports:
+      - 8081:80
+    environment:
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: craftedby_db
+      DB_USERNAME: crafteradmin
+      DB_PASSWORD: crafter
+    volumes:
+      - ./docker/post-run.sh:/app/post-run.sh
+    networks:
+      - craftedby-network
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+    networks:
+      - craftedby-network
+
+volumes:
+    mariadb-data:
+
+networks:
+  craftedby-network:
+
+
+
+
+
