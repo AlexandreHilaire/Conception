@@ -19,7 +19,7 @@ services:
   docker-backend:
     build: ../CraftedBy-backendAPI/
     ports:
-      - 8081:80
+      - 8000:80
     environment:
       DB_CONNECTION: mysql
       DB_HOST: db
@@ -27,6 +27,8 @@ services:
       DB_DATABASE: craftedby_db
       DB_USERNAME: crafteradmin
       DB_PASSWORD: crafter
+    depends_on:
+      - db  
     volumes:
       - ./docker/post-run.sh:/app/post-run.sh
     networks:
@@ -36,15 +38,28 @@ services:
     image: adminer
     restart: always
     ports:
-      - 8080:8080
+      - 8001:8080
     networks:
       - craftedby-network
+
+  docker-frontend:
+    image: frontend-vuejs
+    ports: 
+      - 5173:80
+    depends_on:
+      - db
+      - docker-backend
+    networks:
+      - craftedby-network
+    
+    
 
 volumes:
     mariadb-data:
 
 networks:
   craftedby-network:
+
 
 
 
